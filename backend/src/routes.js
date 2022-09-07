@@ -17,6 +17,8 @@ const registerHandler = async (req, res) => {
 
 const loginHandler = async (req, res) => {
   const { username, password } = req.body;
+  console.log('username', username);
+  console.log('password', password);
   const result = await login(username, password);
 
   if (result.error === true) {

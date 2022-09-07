@@ -1,7 +1,7 @@
 import { database } from "../database.js";
 
 const getUsers = async () => {
-  const [rows, fields] = await database.execute("SELECT * FROM users");
+  const [rows, fields] = await database.execute("SELECT uuid, username FROM users");
   return rows;
 }
 

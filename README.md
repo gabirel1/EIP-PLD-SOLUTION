@@ -10,6 +10,12 @@ Then, you can run the application by double clicking on the executable file.
 
 However you will need to start the Backend server, host it and do a little configuration first.
 
+## Application
+
+If for whatever reason your backend server url changes, make sure to clear the localstorage of the application.
+You can do this by opening the developer tools and typing `localStorage.clear()` in the console.
+Or by pressing `CTRL + SHIFT + I` and then clicking on the `Application` tab and then on `Clear storage`.
+
 ## DEPENDENCIES
 
 There should be no dependencies for the application to run as there will be releases.
