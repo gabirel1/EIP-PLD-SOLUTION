@@ -2,7 +2,7 @@ import { app } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd: boolean = process.env.NODE_ENV === 'production';
 
 if (isProd) {
   serve({ directory: 'app' });
@@ -13,9 +13,17 @@ if (isProd) {
 (async () => {
   await app.whenReady();
 
-  const mainWindow = createWindow('main', {
-    width: 1000,
-    height: 600,
+  let mainWindow = createWindow('main', {
+    width: 1920,
+    height: 1080,
+    minHeight:1280,
+    minWidth:720,
+    // backgroundColor: '#2C3333',
+    transparent: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   });
 
   if (isProd) {
