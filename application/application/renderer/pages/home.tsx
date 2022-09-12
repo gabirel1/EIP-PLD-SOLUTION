@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import Head from 'next/head';
 import Link from 'next/link';
 import { Flex, Stack, Avatar, Heading, Box, FormControl, Input, Button } from '@chakra-ui/react';
+import Router from 'next/router';
 
 // a page with a form with one input and one button
 // the input is a text input
@@ -21,12 +21,15 @@ function Home() {
       urlAPI = urlAPI.slice(0, -1);
     }
     localStorage.setItem('apiUrl', urlAPI);
-    window.location.href = '/login';
+    // window.location.href = '/login.html';
+    Router.push('/login');
   };
 
   useEffect(() => {
     if (localStorage.getItem('apiUrl')) {
-      window.location.href = '/login';
+      console.log('apiUrl == ', localStorage.getItem('apiUrl'));
+      console.log('window == ', window);
+      Router.push('/login');
     }
   })
 

@@ -23,6 +23,10 @@ import { writeFile } from 'fs/promises';
 import moment from "moment";
 import React, { useEffect } from "react";
 import { showNotification } from "../utils";
+import { download } from 'electron-dl';
+import { ipcRenderer } from 'electron';
+import os from 'os';
+import path from 'path';
 
 interface CategoryDrawerProps {
   isOpen: boolean
@@ -102,11 +106,13 @@ export const ExportPDFDrawer = (props: CategoryDrawerProps) => {
         }, 3000);
         return;
       }
-      // 2024_PLD_BLOCK2SCHOOL_202207KO_2.pdf
       const filename = `${moment().format('YYYY')}_PLD_${projectName?.toUpperCase()}_${moment().format('YYYYMM')}${getProjectPhase(sprintPhase)}_${sprintNumber}.pdf`;
-      await writeFile(filename, data);
+      console.log('first')
+      const home = os.homedir();
+      const filepaath = path.join(home, 'Downloads', filename);
+      await writeFile(filepaath, data);
       setIsError(false);
-      showNotification('Successfully exported PDF');
+      showNotification('Successfully exported PDF\nPlease check your downloads folder');
     })
     .catch((error) => {
       console.log('error == ', error);

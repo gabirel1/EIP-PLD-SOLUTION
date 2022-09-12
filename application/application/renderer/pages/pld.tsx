@@ -17,6 +17,7 @@ import {
 import { NavGroup } from '../components/NavGroup';
 import { CreateCategoryDrawer } from '../components/CreateCategoryDrawer';
 import { ExportPDFDrawer } from '../components/ExportPdfDrawer';
+import Router from 'next/router';
 
 export default function PLD() {
   const [apiUrl, setApiUrl] = useState('');
@@ -46,7 +47,8 @@ export default function PLD() {
     const url = localStorage.getItem('apiUrl');
     if (url === null) {
       showNotification('Please enter the API URL first !');
-      window.location.href = '/home';
+      // window.location.href = '/home';
+      Router.push('/home');
       return;
     }
     console.log('url == ', url);
@@ -59,7 +61,8 @@ export default function PLD() {
     const token = localStorage.getItem('token');
     if (token === null) {
       showNotification('Please login first !');
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      Router.push('/login');
       return;
     }
     console.log('apiUrl == ', apiUrl);
@@ -90,7 +93,8 @@ export default function PLD() {
     }).catch((error) => {
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -102,7 +106,8 @@ export default function PLD() {
     const token = localStorage.getItem('token');
     if (token === null) {
       showNotification('Please login first !');
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      Router.push('/login');
       return;
     }
     console.log('apiUrl == ', apiUrl);
@@ -124,7 +129,8 @@ export default function PLD() {
       // check if status is 401
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -135,14 +141,16 @@ export default function PLD() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-    window.location.href = '/login';
+    // window.location.href = '/login';
+    Router.push('/login');
   }
 
   const handleRefresh = () => {
     const token = localStorage.getItem('token');
     if (token === null) {
       showNotification('Please login first !');
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      Router.push('/login');
       return;
     }
     console.log('apiUrl == ', apiUrl);
@@ -173,7 +181,8 @@ export default function PLD() {
     }).catch((error) => {
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -197,7 +206,8 @@ export default function PLD() {
       // check if status is 401
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -209,7 +219,8 @@ export default function PLD() {
     const token = localStorage.getItem('token');
     if (token === null) {
       showNotification('Please login first !');
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      Router.push('/login');
       return;
     }
     console.log('apiUrl == ', apiUrl);
@@ -235,7 +246,8 @@ export default function PLD() {
       // check if status is 401
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -253,7 +265,8 @@ export default function PLD() {
     const token = localStorage.getItem('token');
     if (token === null) {
       showNotification('Please login first !');
-      window.location.href = '/login';
+      // window.location.href = '/login';
+      Router.push('/login');
       return;
     }
     console.log('apiUrl == ', apiUrl);
@@ -280,7 +293,8 @@ export default function PLD() {
       // check if status is 401
       if (error.response.status === 401) {
         showNotification('Please login first !');
-        window.location.href = '/login';
+        // window.location.href = '/login';
+        Router.push('/login');
         return;
       }
       console.log('error == ', error);
@@ -378,7 +392,7 @@ export default function PLD() {
                             </Text>
                             <FormControl paddingTop={'3%'}>
                               <Select
-                                defaultValue={card.card_assigned_user_uuid}
+                                // defaultValue={card.card_assigned_user_uuid}
                                 value={card.card_assigned_user_uuid}
                                 placeholder="Select user"
                                 onChange={(e) => handleCardUserChange(e, card.uuid, e.target.value)}

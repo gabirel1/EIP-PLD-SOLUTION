@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import axios from 'axios';
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { showNotification } from '../utils';
+import Router from 'next/router';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -29,7 +30,8 @@ export default function Login() {
     const url = localStorage.getItem('apiUrl');
     if (url === null) {
       showNotification('Please enter the API URL first !');
-      window.location.href = '/home';
+      // window.location.href = '/home';
+      Router.push('/home');
       return;
     }
     setApiUrl(url);
@@ -58,7 +60,8 @@ export default function Login() {
       localStorage.setItem('username', username);
   
       setIsError(false);
-      window.location.href = '/pld';
+      // window.location.href = '/pld';
+      Router.push('/pld')
     })
     .catch((error) => {
       console.log('error', error);

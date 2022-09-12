@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import serve from 'electron-serve';
 import { createWindow } from './helpers';
 
@@ -10,18 +10,21 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
 
+let mainWindow: BrowserWindow;
+
 (async () => {
   await app.whenReady();
 
-  let mainWindow = createWindow('main', {
+  mainWindow = createWindow('main', {
     width: 1920,
     height: 1080,
-    minHeight:1280,
-    minWidth:720,
+    minWidth: 1280,
+    minHeight:720,
     // backgroundColor: '#2C3333',
     transparent: false,
     webPreferences: {
       contextIsolation: false,
+      nodeIntegration: true,
     },
   });
 
