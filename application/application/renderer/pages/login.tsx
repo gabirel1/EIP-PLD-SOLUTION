@@ -4,6 +4,7 @@ import { Flex, Stack, Avatar, Text, chakra, Heading, Box, FormControl, Input, Bu
 import CryptoJS from "crypto-js";
 import axios from 'axios';
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { showNotification } from '../utils';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -27,7 +28,8 @@ export default function Login() {
   useEffect(() => {
     const url = localStorage.getItem('apiUrl');
     if (url === null) {
-      window.location.href = '/';
+      showNotification('Please enter the API URL first !');
+      window.location.href = '/home';
       return;
     }
     setApiUrl(url);
@@ -53,6 +55,7 @@ export default function Login() {
       }
       const token = data.token;
       localStorage.setItem('token', token);
+      localStorage.setItem('username', username);
   
       setIsError(false);
       window.location.href = '/pld';

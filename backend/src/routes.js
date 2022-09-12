@@ -3,7 +3,9 @@ import { login } from "./login.js";
 import { createCategory, getCategories } from "./category.js";
 import { createCard, getCards, assignUserToCard, removeCard, updateCard } from "./cards.js";
 import { getGeneralInformations, getUserList } from "./generalInformations.js";
+import { exportPDF } from "./pdf.js";
 import jwt from "jsonwebtoken";
+import path from 'path';
 
 const registerHandler = async (req, res) => {
   const { username, password } = req.body;
@@ -28,7 +30,7 @@ const loginHandler = async (req, res) => {
 }
 
 const createCategoryHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
   const { categoryName } = req.body;
 
   try {
@@ -45,7 +47,7 @@ const createCategoryHandler = async (req, res) => {
 }
 
 const getCategoriesHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -58,7 +60,7 @@ const getCategoriesHandler = async (req, res) => {
 }
 
 const createCardHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   const {
     categoryName, cardName, cardDescription,
@@ -84,7 +86,7 @@ const createCardHandler = async (req, res) => {
 }
 
 const getCardsHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -97,7 +99,7 @@ const getCardsHandler = async (req, res) => {
 }
 
 const assignUserToCardHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   const { cardUuid, userUuid } = req.body;
 
@@ -115,9 +117,10 @@ const assignUserToCardHandler = async (req, res) => {
 }
 
 const removeCardHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   const { cardUuid } = req.body;
+  console.log('cardUuid', cardUuid);
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -133,7 +136,7 @@ const removeCardHandler = async (req, res) => {
 }
 
 const updateCardHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   const {
     cardUuid, categoryName, cardName, cardDescription,
@@ -159,7 +162,7 @@ const updateCardHandler = async (req, res) => {
 }
 
 const getGeneralInformationsHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -172,7 +175,7 @@ const getGeneralInformationsHandler = async (req, res) => {
 }
 
 const getUserListHandler = async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
+  const token = req.headers.authorization?.split(' ')[1];
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -184,9 +187,35 @@ const getUserListHandler = async (req, res) => {
   }
 }
 
+const exportPDFHandler = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  const { projectName, sprintNumber, sprintPhase } = req.body;
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const result = await exportPDF(projectName, sprintNumber, sprintPhase);
+
+    if (result.error === true) {
+      return res.status(400).json({ error: true, message: result.message });
+    }
+    const filePath = './test.pdf';
+    return res.download(filePath, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('File downloaded');
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ error: true, message: 'Unauthorized' });
+  }
+}
+
 export default {
   registerHandler, loginHandler, createCategoryHandler,
   getCategoriesHandler, createCardHandler, getCardsHandler,
   assignUserToCardHandler, removeCardHandler, updateCardHandler,
-  getGeneralInformationsHandler, getUserListHandler
+  getGeneralInformationsHandler, getUserListHandler, exportPDFHandler
 };

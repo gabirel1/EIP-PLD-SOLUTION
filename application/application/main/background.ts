@@ -21,7 +21,6 @@ if (isProd) {
     // backgroundColor: '#2C3333',
     transparent: false,
     webPreferences: {
-      nodeIntegration: true,
       contextIsolation: false,
     },
   });

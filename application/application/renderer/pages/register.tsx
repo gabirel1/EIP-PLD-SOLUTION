@@ -28,7 +28,8 @@ export default function Register() {
   useEffect(() => {
     const url = localStorage.getItem('apiUrl');
     if (url === null) {
-      window.location.href = '/';
+      showNotification('Please enter the API URL first !');
+      window.location.href = '/home';
       return;
     }
     setApiUrl(url);

@@ -15,7 +15,12 @@ function Home() {
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    localStorage.setItem('apiUrl', apiUrl);
+    let urlAPI = apiUrl;
+    urlAPI.trim();
+    if (urlAPI.length >= 1 && urlAPI[urlAPI.length - 1] === '/') {
+      urlAPI = urlAPI.slice(0, -1);
+    }
+    localStorage.setItem('apiUrl', urlAPI);
     window.location.href = '/login';
   };
 
@@ -50,7 +55,7 @@ function Home() {
                 <FormControl isRequired>
                   <Input
                     type='url'
-                    placeholder="API URL"
+                    placeholder="http://localhost:8080"
                     onChange={(event) => setApiUrl(event.target.value)}
                   />
                 </FormControl>

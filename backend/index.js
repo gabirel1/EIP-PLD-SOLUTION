@@ -24,6 +24,7 @@ app.delete('/card', handlers.removeCardHandler); // tested
 app.put('/card', handlers.updateCardHandler); // tested
 app.get('/general-informations', handlers.getGeneralInformationsHandler); // tested
 app.get('/users', handlers.getUserListHandler); // tested
+app.post('/export', handlers.exportPDFHandler); // tested
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
