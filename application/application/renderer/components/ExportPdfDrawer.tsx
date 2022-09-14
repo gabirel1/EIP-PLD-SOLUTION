@@ -94,7 +94,7 @@ export const ExportPDFDrawer = (props: CategoryDrawerProps) => {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      responseType: 'stream'
+      responseType: 'arraybuffer'
     })
     .then(async (response) => {
       const data = response.data;
@@ -110,7 +110,7 @@ export const ExportPDFDrawer = (props: CategoryDrawerProps) => {
       console.log('first')
       const home = os.homedir();
       const filepaath = path.join(home, 'Downloads', filename);
-      await writeFile(filepaath, data);
+      await writeFile(filepaath, Buffer.from(data));
       setIsError(false);
       showNotification('Successfully exported PDF\nPlease check your downloads folder');
     })
