@@ -13,6 +13,7 @@ const CFaLock = chakra(FaLock);
 export default function Register() {
   const [apiUrl, setApiUrl] = useState('');
   const [username, setUsername] = useState('');
+  const [secretKey, setSecretKey] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -20,6 +21,10 @@ export default function Register() {
   const hashPassword = (password: string): string => {
     const hashed: string = CryptoJS.SHA256(password).toString();
     return hashed;
+  }
+
+  const hashSecret = (secret: string): string => {
+    return CryptoJS.SHA256(secret).toString();
   }
 
   const handleShowClick = () => {
@@ -40,12 +45,14 @@ export default function Register() {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const password = hashPassword(passwordInput);
+    const secret = hashSecret(secretKey);
     await axios({
       method: 'POST',
       url: `${apiUrl}/register`,
       data: {
         'username': username,
-        'password': password
+        'password': password,
+        'secret': secret
       }
     })
     .then((response) => {
@@ -110,6 +117,19 @@ export default function Register() {
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
+                      children={<CFaLock color="gray.300" />}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Secret Key"
+                      onChange={(event) => { setSecretKey(event.target.value); setIsError(false); }}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl isRequired isInvalid={isError}>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
                       color="gray.300"
                       children={<CFaLock color="gray.300" />}
                     />
@@ -126,7 +146,7 @@ export default function Register() {
                   </InputGroup>
                   {
                     isError === true ?
-                      <FormErrorMessage>Username already taken.</FormErrorMessage>
+                      <FormErrorMessage>Username already taken / Secret Key Invalid.</FormErrorMessage>
                       : null
                   }
                 </FormControl>

@@ -8,11 +8,13 @@ import jwt from "jsonwebtoken";
 import path from 'path';
 
 const registerHandler = async (req, res) => {
-  const { username, password } = req.body;
-  const result = await register(username, password);
+  const { username, password, secret } = req.body;
+  const result = await register(username, password, secret);
 
-  if (result === false) {
+  if (result.success === false && result.message === 'Username already taken') {
     return res.status(400).json({ error: true, message: 'Username already taken' });
+  } else if (result.success === false && result.message === 'Secret key is not correct') {
+    return res.status(400).json({ error: true, message: 'Secret key is not correct' });
   }
   return res.status(201).json({ error: false, message: 'User created' });
 }
