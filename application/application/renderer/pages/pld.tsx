@@ -12,7 +12,8 @@ import {
   BiGroup,
   BiRefresh,
   BiAddToQueue,
-  BiTrash
+  BiTrash,
+  BiReset
 } from 'react-icons/bi'
 import { NavGroup } from '../components/NavGroup';
 import { CreateCategoryDrawer } from '../components/CreateCategoryDrawer';
@@ -303,6 +304,12 @@ export default function PLD() {
     });
   }
 
+  const handleAppReset = () => {
+    localStorage.clear();
+    showNotification('App reset successfully !');
+    Router.push('/home');
+  }
+
   return (
     <>
       <Box height="100vh" overflow="hidden" position="relative">
@@ -317,6 +324,7 @@ export default function PLD() {
                   <NavItem icon={<BiDownload/>} label="Export in pdf" callback={() => onOpen3()} />
                   <NavItem icon={<BiRefresh />} label="Refresh" callback={() => handleRefresh()} />
                   <NavItem icon={<BiPowerOff />} label="Disconnect" callback={() => handleLogout()} />
+                  <NavItem icon={<BiReset />} label="Reset App" callback={() => handleAppReset()} />
                 </Stack>
                 <NavGroup label='Estimated time per user'>
                   <NavItem icon={<BiGroup />} label={'Total: ' + totalWorkingDays} />
