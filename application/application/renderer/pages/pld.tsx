@@ -13,12 +13,14 @@ import {
   BiRefresh,
   BiAddToQueue,
   BiTrash,
-  BiReset
+  BiReset,
+  BiEdit
 } from 'react-icons/bi'
 import { NavGroup } from '../components/NavGroup';
 import { CreateCategoryDrawer } from '../components/CreateCategoryDrawer';
 import { ExportPDFDrawer } from '../components/ExportPdfDrawer';
 import Router from 'next/router';
+import { UpdateCardDrawer } from '../components/UpdateCardDrawer';
 
 export default function PLD() {
   const [apiUrl, setApiUrl] = useState('');
@@ -30,6 +32,7 @@ export default function PLD() {
   const [cards, setCards] = useState([]);
   const [totalWorkingDays, setTotalWorkingDays] = useState(0);
   const [totalTimePerUser, setTotalTimePerUser] = useState([]);
+  const [selectedCardInformations, setSelectedCardInformations] = useState<any>();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -42,6 +45,12 @@ export default function PLD() {
     isOpen: isOpen3,
     onOpen: onOpen3,
     onClose: onClose3
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpen4,
+    onOpen: onOpen4,
+    onClose: onClose4
   } = useDisclosure();
 
   useEffect(() => {
@@ -87,10 +96,10 @@ export default function PLD() {
         return b.time - a.time;
       }));
 
-      console.log('users == ', users);
-      console.log('categories == ', categories);
-      console.log('totalWorkingDays == ', totalWorkingDays);
-      console.log('totalTimePerUser == ', totalTimePerUser);
+      // console.log('users == ', users);
+      // console.log('categories == ', categories);
+      // console.log('totalWorkingDays == ', totalWorkingDays);
+      // console.log('totalTimePerUser == ', totalTimePerUser);
     }).catch((error) => {
       if (error.response.status === 401) {
         showNotification('Please login first !');
@@ -119,7 +128,7 @@ export default function PLD() {
         'Authorization': `Bearer ${token}`
       }
     }).then((response) => {
-      console.log('repsonse ==: ', response.data);
+      // console.log('repsonse ==: ', response.data);
       const data = response.data;
       if (data.error === true || response.status === 400) {
         setIsError(true);
@@ -175,10 +184,10 @@ export default function PLD() {
         return b.time - a.time;
       }));
 
-      console.log('users == ', users);
-      console.log('categories == ', categories);
-      console.log('totalWorkingDays == ', totalWorkingDays);
-      console.log('totalTimePerUser == ', totalTimePerUser);
+      // console.log('users == ', users);
+      // console.log('categories == ', categories);
+      // console.log('totalWorkingDays == ', totalWorkingDays);
+      // console.log('totalTimePerUser == ', totalTimePerUser);
     }).catch((error) => {
       if (error.response.status === 401) {
         showNotification('Please login first !');
@@ -196,7 +205,7 @@ export default function PLD() {
         'Authorization': `Bearer ${token}`
       }
     }).then((response) => {
-      console.log('repsonse ==: ', response.data);
+      // console.log('repsonse ==: ', response.data);
       const data = response.data;
       if (data.error === true || response.status === 400) {
         setIsError(true);
@@ -282,7 +291,7 @@ export default function PLD() {
         'Authorization': `Bearer ${token}`,
       },
     }).then((response) => {
-      console.log('repsonse ==: ', response.data);
+      // console.log('repsonse ==: ', response.data);
       const data = response.data;
       if (data.error === true || response.status === 400) {
         setIsError(true);
@@ -302,6 +311,17 @@ export default function PLD() {
       setIsError(true);
       return;
     });
+  }
+
+  useEffect(() => {
+    // console.log('selectedCardInformations1 == ', selectedCardInformations);
+    if (selectedCardInformations === undefined || selectedCardInformations === null) return;
+    onOpen4();
+  }, [selectedCardInformations]);
+
+  const handleCardUpdate = async (card: any) => {
+    console.log('card == ', card);
+    setSelectedCardInformations(card);
   }
 
   const handleAppReset = () => {
@@ -413,7 +433,8 @@ export default function PLD() {
                               </Select>
                             </FormControl>
                             <Flex justify="flex-end" style={{ paddingTop: '10px' }}>
-                              <BiTrash color='red' onClick={() => handleCardRemoval(card.uuid)} />
+                              <BiTrash style={{ marginRight: '10%' }} cursor={ 'pointer' } size='8%' color='red' onClick={() => handleCardRemoval(card.uuid)} />
+                              <BiEdit cursor={ 'pointer' } color='blue' size='8%'  onClick={() => handleCardUpdate(card)} />
                             </Flex>
                           </div>
                         </Box>
@@ -441,6 +462,15 @@ export default function PLD() {
               isOpen={isOpen3}
               onClose={onClose3}
               onOpen={onOpen3}
+            />
+            <UpdateCardDrawer
+              isOpen={isOpen4}
+              onClose={onClose4}
+              onOpen={onOpen4}
+              availableCategories={categories}
+              availableUsers={users}
+              cardInformations={selectedCardInformations}
+              refreshFunction={handleRefresh}
             />
           </Box>
         </Flex>

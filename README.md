@@ -32,3 +32,9 @@ mysql -u root -p < init-db.sql
 ```
 
 2. Please fill the .env file in the `backend` folder with the correct information. (You can use the .env.example file as a template)
+
+## QUICK LOOK
+
+<img
+    src="application-look.png" alt="Application look"
+/>
