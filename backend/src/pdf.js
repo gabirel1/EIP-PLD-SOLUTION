@@ -50,15 +50,19 @@ const generatePDF = async (myObject, projectName, sprintNumber, sprintPhase, use
       // display card category in bold
       doc.setFontSize(26);
       doc.setFont('helvetica', 'bold');
-      doc.text(card.category_name, 105, 36, { align: 'center' });
+      doc.text(card.category_name, 105, 36, { align: 'center', maxWidth: 190 });
 
       doc.setFontSize(20);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${categoryIndex}.${cardIndex} ${card.card_name}`, 15, 50, { align: 'left' });
+      if (card.card_name.length > 50) {
+        doc.text(`${categoryIndex}.${cardIndex} ${card.card_name}`, 15, 46, { align: 'left', maxWidth: 180 });
+      } else {
+        doc.text(`${categoryIndex}.${cardIndex} ${card.card_name}`, 15, 50, { align: 'left', maxWidth: 180 })
+      }
       doc.setFontSize(15);
       doc.setFont('helvetica', 'normal');
       doc.text(`As a: ${card.card_as_a}`, 12, 72, { align: 'left', maxWidth: 65 });
-      doc.text(`I want: ${card.card_i_want_to}`, 90, 72, { align: 'left', maxWidth: 180 });
+      doc.text(`I want: ${card.card_i_want_to}`, 90, 72, { align: 'left', maxWidth: 108 });
       doc.text(`Description:\n ${card.card_description}`, 12, 100, { align: 'left', maxWidth: 180 });
       doc.text(`Definition of Done:\n ${card.card_definition_of_done}`, 12, 140, { align: 'left', maxWidth: 180 });
       doc.text(`${card.card_estimated_time}`, 150, 262, { align: 'left' });
