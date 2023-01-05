@@ -313,6 +313,52 @@ export default function PLD() {
     });
   }
 
+  const handleCardStatusChange = (event: any, cardId: string, status: string) => {
+    event.preventDefault();
+    console.log('cardId == ', cardId);
+    console.log('status == ', status);
+
+    const token = localStorage.getItem('token');
+    if (token === null) {
+      showNotification('Please login first !');
+      // window.location.href = '/login';
+      Router.push('/login');
+      return;
+    }
+    console.log('apiUrl == ', apiUrl);
+    axios({
+      method: 'POST',
+      url: `${apiUrl}/card/status`,
+      data: {
+        'cardUuid': cardId,
+        'status': status
+      },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }).then((response) => {
+      // console.log('repsonse ==: ', response.data);
+      const data = response.data;
+      if (data.error === true || response.status === 400) {
+        setIsError(true);
+        return;
+      }
+      showNotification('Card status changed successfully !');
+      handleRefresh();
+    }).catch((error) => {
+      // check if status is 401
+      if (error.response.status === 401) {
+        showNotification('Please login first !');
+        // window.location.href = '/login';
+        Router.push('/login');
+        return;
+      }
+      console.log('error == ', error);
+      setIsError(true);
+      return;
+    });
+  }
+
   useEffect(() => {
     // console.log('selectedCardInformations1 == ', selectedCardInformations);
     if (selectedCardInformations === undefined || selectedCardInformations === null) return;
@@ -432,6 +478,20 @@ export default function PLD() {
                                 })}
                               </Select>
                             </FormControl>
+                            <Flex justify="flex-start" style={{ paddingTop: '10px' }}>
+                              <Text>Status: </Text>
+                              <FormControl paddingLeft={'20%'} size={'4%'} paddingTop={'3%'}>
+                                <Select
+                                  value={card.card_status}
+                                  placeholder="Select status"
+                                  onChange={(e) => handleCardStatusChange(e, card.uuid, e.target.value)}
+                                >
+                                  <option key={0} value={0}>Not started</option>
+                                  <option key={1} value={1}>In progress</option>
+                                  <option key={2} value={2}>Finished</option>
+                                </Select>
+                              </FormControl>
+                            </Flex>
                             <Flex justify="flex-end" style={{ paddingTop: '10px' }}>
                               <BiTrash style={{ marginRight: '10%' }} cursor={ 'pointer' } size='8%' color='red' onClick={() => handleCardRemoval(card.uuid)} />
                               <BiEdit cursor={ 'pointer' } color='blue' size='8%'  onClick={() => handleCardUpdate(card)} />

@@ -1,7 +1,7 @@
 import { register } from "./register.js";
 import { login } from "./login.js";
 import { createCategory, getCategories } from "./category.js";
-import { createCard, getCards, assignUserToCard, removeCard, updateCard } from "./cards.js";
+import { createCard, getCards, assignUserToCard, removeCard, updateCard, updateCardStatus } from "./cards.js";
 import { getGeneralInformations, getUserList } from "./generalInformations.js";
 import { exportPDF } from "./pdf.js";
 import jwt from "jsonwebtoken";
@@ -118,6 +118,24 @@ const assignUserToCardHandler = async (req, res) => {
   }
 }
 
+const updateCardStatusHandler = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  const { cardUuid, status } = req.body;
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const result = await updateCardStatus(cardUuid, status);
+    if (result.error === true) {
+      return res.status(400).json({ error: true, message: result.message });
+    }
+    return res.status(200).json({ error: false, message: 'Card status updated' });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ error: true, message: 'Unauthorized' });
+  }
+}
+
 const removeCardHandler = async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
 
@@ -219,5 +237,6 @@ export default {
   registerHandler, loginHandler, createCategoryHandler,
   getCategoriesHandler, createCardHandler, getCardsHandler,
   assignUserToCardHandler, removeCardHandler, updateCardHandler,
-  getGeneralInformationsHandler, getUserListHandler, exportPDFHandler
+  getGeneralInformationsHandler, getUserListHandler, exportPDFHandler,
+  updateCardStatusHandler
 };

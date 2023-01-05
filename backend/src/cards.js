@@ -82,3 +82,15 @@ export const updateCard = async (
   }
   return { error: true, message: "Something went wrong" };
 }
+
+// card status: 0 - not started, 1 - in progress, 2 - done
+export const updateCardStatus = async (cardUuid, cardStatus) => {
+  const [rows, fields] = await database.execute(
+    "UPDATE cards SET card_status = ? WHERE uuid = ?",
+    [cardStatus, cardUuid]
+  );
+  if (rows.affectedRows > 0) {
+    return { error: false, message: "Card status updated" };
+  }
+  return { error: true, message: "Something went wrong" };
+}
