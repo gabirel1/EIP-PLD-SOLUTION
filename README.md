@@ -10,6 +10,14 @@ Then, you can run the application by double clicking on the executable file.
 
 However you will need to start the Backend server, host it and do a little configuration first.
 
+## HOW TO BUILD
+
+Go to `application/application`
+
+```cd application/application && yarn build```
+
+go to `dist/` and find your release (.AppImage, .dmg, .exe, .snap)
+
 ## Application
 
 If for whatever reason your backend server url changes, make sure to clear the localstorage of the application.
