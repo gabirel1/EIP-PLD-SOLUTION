@@ -121,8 +121,8 @@ const assignUserToCardHandler = async (req, res) => {
 const updateCardStatusHandler = async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
 
-  const { cardUuid, status } = req.body;
-
+  const { cardUuid, status = '0' } = req.body;
+  
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     const result = await updateCardStatus(cardUuid, status);
@@ -131,6 +131,7 @@ const updateCardStatusHandler = async (req, res) => {
     }
     return res.status(200).json({ error: false, message: 'Card status updated' });
   } catch (error) {
+    console.log('req.body', req.body);
     console.log(error);
     return res.status(401).json({ error: true, message: 'Unauthorized' });
   }

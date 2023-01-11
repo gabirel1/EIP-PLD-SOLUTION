@@ -44,7 +44,7 @@ export const getCards = async () => {
   return rows;
 }
 
-export const assignUserToCard = async (cardUuid, userUuid) => {
+export const assignUserToCard = async (cardUuid, userUuid = undefined) => {
   const [rows, fields] = await database.execute(
     "UPDATE cards SET card_assigned_user_uuid = ? WHERE uuid = ?",
     [userUuid, cardUuid]
@@ -84,7 +84,7 @@ export const updateCard = async (
 }
 
 // card status: 0 - not started, 1 - in progress, 2 - done
-export const updateCardStatus = async (cardUuid, cardStatus) => {
+export const updateCardStatus = async (cardUuid, cardStatus = 0) => {
   const [rows, fields] = await database.execute(
     "UPDATE cards SET card_status = ? WHERE uuid = ?",
     [cardStatus, cardUuid]

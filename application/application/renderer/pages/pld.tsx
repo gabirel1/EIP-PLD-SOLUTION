@@ -33,6 +33,7 @@ export default function PLD() {
   const [totalWorkingDays, setTotalWorkingDays] = useState(0);
   const [totalTimePerUser, setTotalTimePerUser] = useState([]);
   const [selectedCardInformations, setSelectedCardInformations] = useState<any>();
+  const [totalDoneTimePerUser, setTotalDoneTimePerUser] = useState([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -93,6 +94,9 @@ export default function PLD() {
       setCategories(data.generalInformations?.categories);
       setTotalWorkingDays(data.generalInformations?.totalNumberOfTime);
       setTotalTimePerUser(data.generalInformations?.totalTimePerUser.sort((a, b) => {
+        return b.time - a.time;
+      }));
+      setTotalDoneTimePerUser(data.generalInformations?.totalTimeDonePerUser.sort((a, b) => {
         return b.time - a.time;
       }));
 
@@ -181,6 +185,9 @@ export default function PLD() {
       setCategories(data.generalInformations?.categories);
       setTotalWorkingDays(data.generalInformations?.totalNumberOfTime);
       setTotalTimePerUser(data.generalInformations?.totalTimePerUser.sort((a, b) => {
+        return b.time - a.time;
+      }));
+      setTotalDoneTimePerUser(data.generalInformations?.totalTimeDonePerUser.sort((a, b) => {
         return b.time - a.time;
       }));
 
@@ -405,6 +412,18 @@ export default function PLD() {
                     )
                   })}
                 </NavGroup>
+                <NavGroup label='Time done by user'>
+                  {totalDoneTimePerUser?.map((_user, index) => {
+                    return (
+                      <NavItem
+                        key={index}
+                        icon={<BiUser />}
+                        active={_user.time > 0 ? true : false}
+                        label={_user.user.username + ': ' + (_user.time ? _user.time : 0)}
+                      />
+                    )
+                  })}
+                </NavGroup>
               </Stack>
             </Flex>
           </Box>
@@ -468,7 +487,7 @@ export default function PLD() {
                               <Select
                                 // defaultValue={card.card_assigned_user_uuid}
                                 value={card.card_assigned_user_uuid}
-                                placeholder="Select user"
+                                placeholder={card.card_assigned_user_uuid === null ? 'Select user' : ''}
                                 onChange={(e) => handleCardUserChange(e, card.uuid, e.target.value)}
                               >
                                 {users?.map((_user, index) => {
@@ -483,7 +502,7 @@ export default function PLD() {
                               <FormControl paddingLeft={'20%'} size={'4%'} paddingTop={'3%'}>
                                 <Select
                                   value={card.card_status}
-                                  placeholder="Select status"
+                                  // placeholder="Select status"
                                   onChange={(e) => handleCardStatusChange(e, card.uuid, e.target.value)}
                                 >
                                   <option key={0} value={0}>Not started</option>
