@@ -1,4 +1,4 @@
-import { Flex, Stack, Avatar, Text, chakra, Heading, Box, FormControl, Input, Button, InputGroup, InputLeftElement, InputRightElement, FormHelperText, FormErrorMessage, Image, useDisclosure, SimpleGrid, Center, Select, Divider } from '@chakra-ui/react';
+import { Flex, Stack, Avatar, Text, chakra, Heading, Box, FormControl, Input, Button, InputGroup, InputLeftElement, InputRightElement, FormHelperText, FormErrorMessage, Image, useDisclosure, SimpleGrid, Center, Select, Divider, Badge } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { showNotification } from '../utils';
@@ -540,6 +540,20 @@ export default function PLD() {
                         <Box key={index} p="6" bg="white" borderWidth='1px' shadow="md" rounded="md">
                           <Center>
                             <Heading size="md">{card.category_name}</Heading>
+                          </Center>
+                          {/*
+                            if card.card_assigned_user_uuid is null, then display a red headband in the top right corner with "Unassigned" written inside
+                          */}
+                          <Center>
+                            {card.card_assigned_user_uuid == null ?
+                              <Badge borderRadius="full" px="2" colorScheme="red">
+                                Unassigned
+                              </Badge>
+                              :
+                              <Badge borderRadius="full" px="2" colorScheme="green">
+                                {users.find(_user => _user.uuid === card.card_assigned_user_uuid).username}
+                              </Badge>
+                            }
                           </Center>
                           <Divider orientation="horizontal" paddingTop='5%' />
                           <Text mt="4" fontSize="sm" fontWeight='semibold' color="gray.900">
