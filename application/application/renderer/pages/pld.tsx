@@ -34,6 +34,7 @@ export default function PLD() {
   const [totalTimePerUser, setTotalTimePerUser] = useState([]);
   const [selectedCardInformations, setSelectedCardInformations] = useState<any>();
   const [totalDoneTimePerUser, setTotalDoneTimePerUser] = useState([]);
+  const [userToDisplayUuid, setUserToDisplayUuid] = useState('');
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -230,6 +231,7 @@ export default function PLD() {
       console.log('error == ', error);
       setIsError(true);
     });
+    setUserToDisplayUuid('');
   }
 
   const handleCardRemoval = (cardId: string) => {
@@ -372,6 +374,10 @@ export default function PLD() {
     onOpen4();
   }, [selectedCardInformations]);
 
+  useEffect(() => {
+    console.log('[useEffect] cards == ', cards);
+  }, [cards])
+
   const handleCardUpdate = async (card: any) => {
     console.log('card == ', card);
     setSelectedCardInformations(card);
@@ -381,6 +387,60 @@ export default function PLD() {
     localStorage.clear();
     showNotification('App reset successfully !');
     Router.push('/home');
+  }
+
+  const handleFilterChangeUser = (userUuid: string) => {
+    console.log('userUuid == ', userUuid);
+    let _cards = [...cards];
+    _cards = _cards.filter((_card) => {
+      return _card.card_assigned_user_uuid === userUuid;
+    });
+    setUserToDisplayUuid(userUuid);
+    // setCards(_cards);
+  }
+
+  const handleFilterOrderBy = (orderBy: string) => {
+    console.log('orderBy == ', orderBy);
+    // 0 = User
+    // 1 = Category
+    // 2 = Status
+    let _cards = [...cards];
+    if (orderBy == "0") {
+      // the user is determined by the uuid, we just want the cards with the same uuid to be grouped together
+      console.log('_cards == ', _cards)
+      _cards.sort((a, b) => {
+        return (('' + a.card_assigned_user_uuid).localeCompare('' + b.card_assigned_user_uuid));
+      });
+      setCards(_cards);
+      // refresh the view to see the changes
+
+    }
+    else if (orderBy == "1") {
+      _cards.sort((a, b) => {
+        return (a.category_name - b.category_name);
+      });
+      setCards(_cards);
+    }
+    else if (orderBy == "2") {
+      // Status = 0 ==> Not started
+      // Status = 1 ==> In progress
+      // Status = 2 ==> Finished
+      _cards = _cards.sort((a, b) => {
+        return (a.card_status - b.card_status);
+      });
+      setCards(_cards);
+    }
+    console.log('cards == ', cards);
+  }
+
+  const showOnlyUnassignedCards = () => {
+    // let _cards = [...cards];
+    // _cards = _cards.filter((_card) => {
+    //   return _card.card_assigned_user_uuid === null;
+    // });
+    // setCards(_cards);
+    if (userToDisplayUuid === null) setUserToDisplayUuid('');
+    else setUserToDisplayUuid(null);
   }
 
   return (
@@ -394,7 +454,7 @@ export default function PLD() {
                   <NavItem active icon={<BiUser />} label={username} />
                   <NavItem icon={<BiAddToQueue />} label="Add new card" callback={() => onOpen()} />
                   <NavItem icon={<BiAddToQueue />} label="Add new category" callback={() => onOpen2()} />
-                  <NavItem icon={<BiDownload/>} label="Export in pdf" callback={() => onOpen3()} />
+                  <NavItem icon={<BiDownload />} label="Export in pdf" callback={() => onOpen3()} />
                   <NavItem icon={<BiRefresh />} label="Refresh" callback={() => handleRefresh()} />
                   <NavItem icon={<BiPowerOff />} label="Disconnect" callback={() => handleLogout()} />
                   <NavItem icon={<BiReset />} label="Reset App" callback={() => handleAppReset()} />
@@ -431,9 +491,51 @@ export default function PLD() {
             <Flex h="full" direction="column" px="4" py="4" overflow="hidden">
               <Stack spacing="8" flex="1" overflow="auto" pt="8">
                 <Stack spacing="1">
-                  <Heading size="lg">Cards</Heading>
+                  <Stack direction='row' spacing={"7%"} paddingBottom={"1%"}>
+                    <Heading size="lg">Cards</Heading>
+                    {/* Add a filter by */}
+                    <Stack direction='column' spacing={5}>
+                      <Text>
+                        Order by:
+                      </Text>
+                      <Select
+                        placeholder=" "
+                        onChange={(e) => handleFilterOrderBy(e.target.value)}
+                      >
+                        <option key={0} value={0}>User</option>
+                        <option key={1} value={1}>Category</option>
+                        <option key={2} value={2}>Status</option>
+                      </Select>
+                    </Stack>
+                    <Stack direction='column' spacing={5}>
+                      <Text>
+                        Show only cards assigned to:
+                      </Text>
+                      <Select
+                        placeholder="Select user"
+                        onChange={(e) => handleFilterChangeUser(e.target.value)}
+                      >
+                        {users?.map((_user, index) => {
+                          return (
+                            <option key={index} value={_user.uuid}>{_user.username}</option>
+                          );
+                        })}
+                      </Select>
+                    </Stack>
+                    <Button
+                      onClick={() => showOnlyUnassignedCards()}
+                    >
+                      {userToDisplayUuid != null ? "Show only unassigned cards" : "Show all cards"}
+                    </Button>
+                  </Stack>
                   <SimpleGrid columns={3} spacing={10}>
                     {cards?.map((card, index) => {
+                      if (userToDisplayUuid == null && card.card_assigned_user_uuid != null) {
+                        return null;
+                      }
+                      else if (userToDisplayUuid != '' && userToDisplayUuid != null && card.card_assigned_user_uuid != userToDisplayUuid) {
+                        return null;
+                      }
                       return (
                         <Box key={index} p="6" bg="white" borderWidth='1px' shadow="md" rounded="md">
                           <Center>
@@ -477,8 +579,6 @@ export default function PLD() {
                               {card.card_estimated_time} days
                             </Text>
                           </Flex>
-
-
                           <div style={{ alignSelf: 'flex-end' }}>
                             <Text mt="4" fontSize="sm" textDecorationLine={'underline'} color="gray.900">
                               Assigned user:
@@ -512,8 +612,8 @@ export default function PLD() {
                               </FormControl>
                             </Flex>
                             <Flex justify="flex-end" style={{ paddingTop: '10px' }}>
-                              <BiTrash style={{ marginRight: '10%' }} cursor={ 'pointer' } size='8%' color='red' onClick={() => handleCardRemoval(card.uuid)} />
-                              <BiEdit cursor={ 'pointer' } color='blue' size='8%'  onClick={() => handleCardUpdate(card)} />
+                              <BiTrash style={{ marginRight: '10%' }} cursor={'pointer'} size='8%' color='red' onClick={() => handleCardRemoval(card.uuid)} />
+                              <BiEdit cursor={'pointer'} color='blue' size='8%' onClick={() => handleCardUpdate(card)} />
                             </Flex>
                           </div>
                         </Box>
