@@ -467,7 +467,7 @@ export default function PLD() {
                         key={index}
                         icon={<BiUser />}
                         active={_user.time > 0 ? true : false}
-                        label={_user.user.username + ': ' + (_user.time ? _user.time : 0)}
+                        label={_user.user?.username + ': ' + (_user.time ? _user.time : 0)}
                       />
                     )
                   })}
@@ -479,7 +479,7 @@ export default function PLD() {
                         key={index}
                         icon={<BiUser />}
                         active={_user.time > 0 ? true : false}
-                        label={_user.user.username + ': ' + (_user.time ? _user.time : 0)}
+                        label={_user.user?.username + ': ' + (_user.time ? _user.time : 0)}
                       />
                     )
                   })}
@@ -517,7 +517,7 @@ export default function PLD() {
                       >
                         {users?.map((_user, index) => {
                           return (
-                            <option key={index} value={_user.uuid}>{_user.username}</option>
+                            <option key={index} value={_user.uuid}>{_user?.username}</option>
                           );
                         })}
                       </Select>
@@ -551,7 +551,7 @@ export default function PLD() {
                               </Badge>
                               :
                               <Badge borderRadius="full" px="2" colorScheme="green">
-                                {users.find(_user => _user.uuid === card.card_assigned_user_uuid).username}
+                                {users.find(_user => _user.uuid === card.card_assigned_user_uuid)?.username}
                               </Badge>
                             }
                           </Center>
@@ -606,7 +606,7 @@ export default function PLD() {
                               >
                                 {users?.map((_user, index) => {
                                   return (
-                                    <option key={index} value={_user.uuid}>{_user.username}</option>
+                                    <option key={index} value={_user.uuid}>{_user?.username}</option>
                                   );
                                 })}
                               </Select>
