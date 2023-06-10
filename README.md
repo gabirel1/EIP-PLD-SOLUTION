@@ -12,9 +12,11 @@ However you will need to start the Backend server, host it and do a little confi
 
 ## HOW TO BUILD
 
-Go to `application/application`
+Go to `application/application` 
 
 ```cd application/application && yarn build```
+
+**If it's not working do a `yarn install` then retry**
 
 go to `dist/` and find your release (.AppImage, .dmg, .exe, .snap)
 
